@@ -1,0 +1,34 @@
+<?php
+// +----------------------------------------------------------------------
+// | {%className%}
+// +----------------------------------------------------------------------
+// | Copyright
+// +----------------------------------------------------------------------
+// | Date:
+// +----------------------------------------------------------------------
+// | Author:
+// +--------------------------------------------------------------------
+
+declare (strict_types = 1);
+
+namespace {%namespace%};
+
+use think\Facade;
+
+/**
+ * Class {%className%}{%annotation%}
+ * @mixin \{%serviceClass%}
+ * @package {%namespace%}
+ */
+class {%className%} extends Facade
+{
+    /**
+     * 获取当前Facade对应类名
+     * @access protected
+     * @return string
+     */
+    protected static function getFacadeClass(): string
+    {
+        return \{%serviceClass%}::class;
+    }
+}
