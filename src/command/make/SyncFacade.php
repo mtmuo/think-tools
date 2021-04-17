@@ -17,7 +17,7 @@ class SyncFacade extends Make
 {
     protected function configure()
     {
-        $this->setName('sync:facade')
+        $this->setName('facade:sync')
             ->addArgument('name', Argument::OPTIONAL, "your facade name")
             ->setDescription('Sync Service class to Facade class');
     }

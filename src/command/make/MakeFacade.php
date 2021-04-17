@@ -19,7 +19,7 @@ class MakeFacade extends Make
 {
     protected function configure()
     {
-        $this->setName('make:facade')
+        $this->setName('facade:make')
             ->addArgument('name', Argument::OPTIONAL, "your facade name")
             ->addOption('city', null, Option::VALUE_REQUIRED, 'city name')
             ->setDescription('Create a new facade class and Service class');
