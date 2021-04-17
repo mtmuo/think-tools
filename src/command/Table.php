@@ -1,26 +1,31 @@
 <?php
 // +----------------------------------------------------------------------
-// | think-utils-ToolsService
+// | think-utils-Table
 // +----------------------------------------------------------------------
 // | Copyright (c) 2021 http://www.bajiukeji.com/ All rights reserved.
 // +----------------------------------------------------------------------
-// | Date: 2021/04/17 14:06
+// | Date: 2021/04/17 17:10
 // +----------------------------------------------------------------------
 // | Author: bajiu <bajiu@bajiukeji.com>
 // +--------------------------------------------------------------------
 
-namespace mtmuo\think;
-
-use think\Service;
-use mtmuo\think\command\make\SyncFacade;
-use mtmuo\think\command\make\MakeFacade;
-use mtmuo\think\command\Table;
+namespace mtmuo\think\command;
 
 
-class ToolsService extends Service
+use think\console\Command;
+use think\console\Input;
+use think\console\Output;
+
+class Table extends Command
 {
-    public function boot()
+    protected function configure()
     {
-        $this->commands(SyncFacade::class, MakeFacade::class,Table::class);
+        $this->setName('table')
+            ->setDescription('Build database schema cache.');
+    }
+
+    protected function execute(Input $input, Output $output)
+    {
+
     }
 }

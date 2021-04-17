@@ -10,7 +10,6 @@
 namespace mtmuo\think\command\make;
 
 use think\console\Input;
-use think\console\input\Argument;
 use think\console\Output;
 
 class SyncFacade extends Make
@@ -18,7 +17,6 @@ class SyncFacade extends Make
     protected function configure()
     {
         $this->setName('facade:sync')
-            ->addArgument('name', Argument::OPTIONAL, "your facade name")
             ->setDescription('Sync Service class to Facade class');
     }
 
