@@ -7,12 +7,10 @@
 // | Author: zt <21723614@qq.com>
 // +--------------------------------------------------------------------
 
-namespace zt\think\command\make;
+namespace mtmuo\think\command\make;
 
-use think\console\Command;
 use think\console\Input;
 use think\console\input\Argument;
-use think\console\input\Option;
 use think\console\Output;
 
 class SyncFacade extends Make

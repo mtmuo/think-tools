@@ -9,16 +9,17 @@
 // | Author: bajiu <bajiu@bajiukeji.com>
 // +--------------------------------------------------------------------
 
-namespace zt\think;
+namespace mtmuo\think;
 
 use think\Service;
-use zt\think\command\make\SyncFacade;
-use zt\think\command\make\MakeFacade;
+use mtmuo\think\command\make\SyncFacade;
+use mtmuo\think\command\make\MakeFacade;
+
 
 class ToolsService extends Service
 {
     public function boot()
     {
-        $this->commands(SyncFacade::class,MakeFacade::class);
+        $this->commands(SyncFacade::class, MakeFacade::class);
     }
 }

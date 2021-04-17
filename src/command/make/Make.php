@@ -7,7 +7,7 @@
 // | Author: zt <21723614@qq.com>
 // +--------------------------------------------------------------------
 
-namespace zt\think\command\make;
+namespace mtmuo\think\command\make;
 
 use think\console\Command;
 

@@ -13,13 +13,13 @@
   },
   "autoload": {
     "psr-4": {
-      "zt\\think\\": "src/"
+      "mtmuo\\think\\": "src/"
     }
   },
   "extra": {
     "think": {
       "services": [
-        "zt\\think\\ToolsService"
+        "mtmuo\\think\\ToolsService"
       ]
     }
   }
