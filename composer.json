@@ -9,7 +9,9 @@
   ],
   "license": "Apache-2.0",
   "require": {
-    "topthink/framework": "^6.0.0"
+    "topthink/framework": "^6.0.0",
+    "ext-json": "*",
+    "ext-openssl": "*"
   },
   "autoload": {
     "psr-4": {
@@ -20,7 +22,10 @@
     "think": {
       "services": [
         "mtmuo\\think\\ToolsService"
-      ]
+      ],
+      "config": {
+        "tools": "config/config.php"
+      }
     }
   }
 }
