@@ -14,6 +14,7 @@ namespace mtmuo\think;
 use mtmuo\think\exception\AuthException;
 use mtmuo\think\jwt\Payload;
 use think\facade\Config;
+use think\facade\Cookie;
 
 class JWTAuth
 {
@@ -39,20 +40,24 @@ class JWTAuth
         'ttl' => 86400,
         // 刷新TOKEN
         'refresh_ttl' => 1800,
-        // 解密方式 HS256|HS384|HS512|RS256|RS384|RS512|ES256|ES384|ES512
+        // 加密方式
         'algo' => 'MD5',
+        'with_cookie' => true,
+        'cookie' => [
+            'httponly' => true,
+        ]
     ];
 
     public function __construct()
     {
-        //$this->config = array_merge($this->config, Config::get('tools.jwt'), []);
+        $this->config = array_merge($this->config, Config::get('tools.jwt'), []);
         $this->payload = new Payload();
     }
 
     // 构建验证
     public function builder($data): string
     {
-        $payload = $this->payload
+        $this->payload
             ->iss($this->config['iss'])
             ->sub($this->config['sub'])
             ->aud($this->config['aud'])
@@ -84,18 +89,21 @@ class JWTAuth
     // 验证
     public function auth(string $input): Payload
     {
+        if (empty($input)) {
+            throw new AuthException("authorization token is empty");
+        }
         $arr = explode('.', $input);
         if (count($arr) != 3) {
-            throw new AuthException("token format error");
+            throw new AuthException("authorization token format error");
         }
         $header = json_decode($this->base64UrlDecode($arr[0]), true);
         $signature = $this->signature($arr[0] . "." . $arr[1], $header['alg']);
         if ($signature != $arr[2]) {
-            throw new AuthException("token signature error");
+            throw new AuthException("authorization token verification failed");
         }
         $payload = json_decode($this->base64UrlDecode($arr[1]), true);
         if ($payload['exp'] < time()) {
-            throw new AuthException("token expired");
+            throw new AuthException("the authorization token has expired");
         }
         $this->payload
             ->exp($payload['iss'])
@@ -110,6 +118,7 @@ class JWTAuth
         return $this->payload;
     }
 
+
     // 创建
     public function create(): string
     {
@@ -118,7 +127,13 @@ class JWTAuth
             'alg' => $this->config['algo'],
         ]);
         $base64 = $this->base64UrlEncode($header) . '.' . $this->base64UrlEncode($this->payload->toJson());
-        return $base64 . '.' . $this->signature($base64, $this->config['algo']);
+        $key = $base64 . '.' . $this->signature($base64, $this->config['algo']);
+        if ($this->config['with_cookie']) {
+            Cookie::set('Authorization', $key, array_merge($this->config['cookie'], ['expire' => $this->config['ttl']]));
+        }
+        header('Authorization:' . $key);
+        header('Authorization-Max-Age:' . $this->config['ttl']);
+        return $key;
     }
 
     // 刷新
@@ -126,5 +141,23 @@ class JWTAuth
     {
         $this->payload->exp(time() + $this->config['ttl'])->toJson();
         return $this->create();
+    }
+
+    // 获取携带信息
+    public function getClaim(string $key = "", $default = null)
+    {
+        return $this->payload->getClaim($key, $default);
+    }
+
+    // 获取携带信息
+    public function getClaims()
+    {
+        return $this->payload->get('');
+    }
+
+    // 获取携带信息
+    public function getPayload(string $key = "", $default = null)
+    {
+        return $this->payload->get($key, $default);
     }
 }

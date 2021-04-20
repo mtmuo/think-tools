@@ -18,6 +18,7 @@ use think\Facade\Db;
 
 class Table extends Command
 {
+    //git rebase br1 br2
     protected function configure()
     {
         $this->setName('table')

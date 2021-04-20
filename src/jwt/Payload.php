@@ -76,6 +76,9 @@ class Payload
 
     public function get($key, $default = null)
     {
+        if (empty($key)) {
+            return $this;
+        }
         return $this->{$key} ?? $default;
     }
 
