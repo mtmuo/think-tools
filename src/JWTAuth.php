@@ -39,13 +39,13 @@ class JWTAuth
         'ttl' => 86400,
         // 刷新TOKEN
         'refresh_ttl' => 1800,
-        // 解密方式 HS256|HS384|HS512|RS256|RS384|RS512|ES256|ES384|ES512
+        // 加密方式
         'algo' => 'MD5',
     ];
 
     public function __construct()
     {
-        //$this->config = array_merge($this->config, Config::get('tools.jwt'), []);
+        $this->config = array_merge($this->config, Config::get('tools.jwt'), []);
         $this->payload = new Payload();
     }
 
