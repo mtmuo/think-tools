@@ -1,5 +1,5 @@
-*
-!.gitignore
-!config
-!src
-!README.md
+.idea
+vendor
+think
+composer.lock
+
