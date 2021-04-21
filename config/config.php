@@ -19,7 +19,14 @@ return [
         // 接收方
         'aud' => '',
         // 证书有效时间
-        'ttl' => 3600,
-        'algo' => 'MD5',
+        'ttl' => 86400,
+        // 加密方式
+        'algo' => 'SHA256',
+        // 返回cookie
+        'with_cookie' => true,
+        'cookie' => [
+            //'secure' => true,
+            //'httponly' => true,
+        ]
     ]
 ];
