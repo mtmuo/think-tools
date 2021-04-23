@@ -23,12 +23,6 @@ class Ant extends Paginator
 
     public function toArray(): array
     {
-        try {
-            $total = $this->total();
-        } catch (DomainException $e) {
-            $total = null;
-        }
-
         return [
             "total" => $this->total,
             "current" => $this->currentPage,
