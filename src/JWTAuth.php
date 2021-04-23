@@ -175,6 +175,6 @@ class JWTAuth
 
     public function validate(string $jit = null): bool
     {
-        return Cookie::has($jit ?? $this->payload->jti);
+        return Cache::has($jit ?? $this->payload->jti);
     }
 }
