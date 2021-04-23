@@ -11,8 +11,6 @@
 
 namespace mtmuo\think\paginator;
 
-
-use DomainException;
 use think\Paginator;
 
 class Ant extends Paginator
@@ -22,17 +20,6 @@ class Ant extends Paginator
     }
 
     public function toArray(): array
-    {
-        return [
-            "total" => $this->total,
-            "current" => $this->currentPage,
-            "pageSize" => $this->listRows,
-            "hasMore" => $this->hasMore,
-            "data" => $this->items,
-        ];
-    }
-
-    public function jsonSerialize(): array
     {
         return [
             "total" => $this->total,
