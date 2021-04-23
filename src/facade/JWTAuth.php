@@ -21,6 +21,9 @@ use think\Facade;
  * @method static string refresh()
  * @method static string getClaim(string $key = null)
  * @method static string|Payload getPayload(string $key = null)
+ * @method static bool invalidate(string $jit = null, int $delay = 0)
+ * @method static bool validate(string $jit = null)
+ * @mixin \mtmuo\think\JWTAuth
  * @package mtmuo\think\facade
  */
 class JWTAuth extends Facade

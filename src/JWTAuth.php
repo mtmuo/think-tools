@@ -13,6 +13,7 @@ namespace mtmuo\think;
 
 use mtmuo\think\exception\AuthException;
 use mtmuo\think\jwt\Payload;
+use think\facade\Cache;
 use think\facade\Config;
 use think\facade\Cookie;
 
@@ -42,7 +43,11 @@ class JWTAuth
         'refresh_ttl' => 1800,
         // 加密方式
         'algo' => 'MD5',
+        // 黑名单模式验证
+        'strict' => true,
+        // cookie方式验证
         'with_cookie' => true,
+        // cookie属性
         'cookie' => [
             'httponly' => true,
         ]
@@ -54,7 +59,6 @@ class JWTAuth
         $this->payload = new Payload();
     }
 
-    // 构建验证
     public function builder($data): string
     {
         $this->payload
@@ -86,7 +90,6 @@ class JWTAuth
         return base64_decode(strtr($input, '-_', '+/'));
     }
 
-    // 验证
     public function auth(string $input): Payload
     {
         if (empty($input)) {
@@ -105,6 +108,9 @@ class JWTAuth
         if ($payload['exp'] < time()) {
             throw new AuthException("the authorization token has expired");
         }
+        if ($this->config['strict'] && !$this->validate($payload['jti'])) {
+            throw new AuthException("the authorization token has expired or blacklist");
+        }
         $this->payload
             ->exp($payload['iss'])
             ->sub($payload['sub'])
@@ -118,14 +124,15 @@ class JWTAuth
         return $this->payload;
     }
 
-
-    // 创建
     public function create(): string
     {
         $header = json_encode([
             'typ' => 'JWT',
             'alg' => $this->config['algo'],
         ]);
+        if (empty($this->payload->jti)) {
+            $this->payload->jti = md5(uniqid(microtime(true), true));
+        }
         $base64 = $this->base64UrlEncode($header) . '.' . $this->base64UrlEncode($this->payload->toJson());
         $key = $base64 . '.' . $this->signature($base64, $this->config['algo']);
         if ($this->config['with_cookie']) {
@@ -133,31 +140,41 @@ class JWTAuth
         }
         header('Authorization:' . $key);
         header('Authorization-Max-Age:' . $this->config['ttl']);
+        Cache::set($this->payload->jti, time(), $this->config['ttl']);
         return $key;
     }
 
-    // 刷新
     public function refresh(): string
     {
         $this->payload->exp(time() + $this->config['ttl'])->toJson();
         return $this->create();
     }
 
-    // 获取携带信息
     public function getClaim(string $key = "", $default = null)
     {
         return $this->payload->getClaim($key, $default);
     }
 
-    // 获取携带信息
     public function getClaims()
     {
         return $this->payload->get('');
     }
 
-    // 获取携带信息
     public function getPayload(string $key = "", $default = null)
     {
         return $this->payload->get($key, $default);
+    }
+
+    public function invalidate(string $jit = null, int $delay = 0): bool
+    {
+        if ($delay) {
+            return Cache::set($jit ?? $this->payload->jti, time(), $delay);
+        }
+        return Cache::delete($jit ?? $this->payload->jti);
+    }
+
+    public function validate(string $jit = null): bool
+    {
+        return Cookie::has($jit ?? $this->payload->jti);
     }
 }

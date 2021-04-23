@@ -19,14 +19,13 @@ class CheckRequestAuth extends ForceCheckRequestAuth
 {
     public function handle(Request $request, Closure $next)
     {
-        if ($origin = $request->header('origin')) {
-            $this->header['Access-Control-Allow-Origin'] = $origin;
-        }
         try {
             $this->check($request);
+            $response = $next($request);
+            $this->refresh();
+            return $response->header($this->header);
         } catch (Exception $exception) {
-            // 系统劫持异常继续
+            return $next($request)->header($this->header);
         }
-        return $next($request)->header($this->header);
     }
 }
