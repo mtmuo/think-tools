@@ -59,14 +59,14 @@ class JWTAuth
         $this->payload = new Payload();
     }
 
-    public function builder($data): string
+    public function builder(array $claims): string
     {
         $this->payload
             ->iss($this->config['iss'])
             ->sub($this->config['sub'])
             ->aud($this->config['aud'])
             ->exp(time() + $this->config['ttl'])
-            ->setClaims($data);
+            ->setClaims($claims);
         return $this->create();
     }
 
@@ -157,7 +157,7 @@ class JWTAuth
 
     public function getClaims()
     {
-        return $this->payload->get('');
+        return $this->payload->get(null);
     }
 
     public function getPayload(string $key = "", $default = null)

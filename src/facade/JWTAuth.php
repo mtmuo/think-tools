@@ -19,7 +19,7 @@ use think\Facade;
  * @method static string builder($data)
  * @method static Payload auth($data)
  * @method static string refresh()
- * @method static string getClaim(string $key = null)
+ * @method static mixed getClaim(string $key = null,$default = null)
  * @method static string|Payload getPayload(string $key = null)
  * @method static bool invalidate(string $jit = null, int $delay = 0)
  * @method static bool validate(string $jit = null)

@@ -12,6 +12,7 @@
 namespace mtmuo\think\paginator;
 
 
+use DomainException;
 use think\Paginator;
 
 class Ant extends Paginator
