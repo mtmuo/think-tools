@@ -32,7 +32,7 @@ if (!function_exists('response_error')) {
 }
 
 if (!function_exists('response_status')) {
-    function response_status($msg = 'error'): Json
+    function response_status($msg = 'success'): Json
     {
         return json([
             'code' => 0,
