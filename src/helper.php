@@ -46,14 +46,13 @@ if (!function_exists('response_status')) {
 if (!function_exists('auth_builder')) {
     /**
      * @param string|array $claims
-     * @param array $config
      * @return string
      * @date: 2021-06-02 11:09
      * @author: zt
      */
-    function auth_builder($claims, array $config = []): string
+    function auth_builder($claims): string
     {
-        return JWTAuth::builder($claims, $config);
+        return JWTAuth::builder($claims);
     }
 }
 

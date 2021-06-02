@@ -74,7 +74,7 @@ class JWTAuth
      */
     public function builder($claims = null, array $config = []): string
     {
-        if (is_array($config)) {
+        if (empty($config) && is_array($config)) {
             $this->config = array_merge($this->config, $config);
         }
         $this->payload
@@ -195,7 +195,7 @@ class JWTAuth
         return $this->payload->get($key, $default);
     }
 
-    public function invalidate($jit = null, int $delay = 0): bool
+    public function invalidate(string $jit = null, int $delay = 0): bool
     {
         if ($delay) {
             return Cache::set($jit ?? $this->payload->jti, time(), $delay);
@@ -203,7 +203,7 @@ class JWTAuth
         return Cache::delete($jit ?? $this->payload->jti);
     }
 
-    public function validate($jit = null): bool
+    public function validate(string $jit = null): bool
     {
         return Cache::has($jit ?? $this->payload->jti);
     }
