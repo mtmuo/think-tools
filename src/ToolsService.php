@@ -11,7 +11,7 @@
 
 namespace mtmuo\think;
 
-use mtmuo\think\paginator\AntPaginator;
+use mtmuo\think\paginator\Ant;
 use think\Service;
 use mtmuo\think\command\make\SyncFacade;
 use mtmuo\think\command\make\MakeFacade;
@@ -21,7 +21,7 @@ use mtmuo\think\command\Table;
 class ToolsService extends Service
 {
     public $bind = [
-        'think\Paginator' => AntPaginator::class,
+        'think\Paginator' => Ant::class,
     ];
 
     public function boot()

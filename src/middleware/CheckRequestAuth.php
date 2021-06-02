@@ -15,7 +15,6 @@ use Closure;
 use Exception;
 use think\Request;
 
-
 class CheckRequestAuth extends ForceCheckRequestAuth
 {
     public function handle(Request $request, Closure $next)
