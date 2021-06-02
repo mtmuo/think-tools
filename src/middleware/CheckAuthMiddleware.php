@@ -1,24 +1,23 @@
 <?php
 // +----------------------------------------------------------------------
-// | think-tools
+// | think-utils
 // +----------------------------------------------------------------------
-// | Copyright (c) think-tools
+// | Copyright (c) think-utils
 // +----------------------------------------------------------------------
-// | Date: 2021/04/21 09:39
+// | Date: 2021/04/20 16:43
 // +----------------------------------------------------------------------
 // | Author: mtmuo
 // +--------------------------------------------------------------------
 
 namespace mtmuo\think\middleware;
 
-
 use Closure;
+use Exception;
 use mtmuo\think\facade\JWTAuth;
 use mtmuo\think\jwt\Payload;
 use think\Request;
-use think\Response;
 
-class ForceCheckRequestAuth
+class CheckAuthMiddleware
 {
     protected $header = [
         'Access-Control-Allow-Credentials' => 'true',
@@ -28,26 +27,10 @@ class ForceCheckRequestAuth
         'Access-Control-Allow-Headers' => 'Authorization, Content-Type, If-Match, If-Modified-Since, If-None-Match, If-Unmodified-Since, X-CSRF-TOKEN, X-Requested-With',
     ];
 
-    public function __construct(Request $request)
-    {
-        if ($origin = $request->header('origin')) {
-            $this->header['Access-Control-Allow-Origin'] = $origin;
-        }
-    }
-
     public function handle(Request $request, Closure $next)
     {
         $this->check($request);
-        $response = $next($request);
-        $this->refresh();
-        return $response->header($this->header);
-    }
-
-    public function refresh()
-    {
-        if (time() - (int)JWTAuth::getPayload('exp') <= 60) {
-            JWTAuth::refresh();
-        }
+        return $next($request)->header($this->header);
     }
 
     public function check(Request $request): Payload
@@ -58,6 +41,10 @@ class ForceCheckRequestAuth
         } elseif ($request->header("Authorization")) {
             $Authorization = $request->header("Authorization");
         }
-        return JWTAuth::auth($Authorization);
+        try {
+            return JWTAuth::auth($Authorization);
+        } catch (Exception $exception) {
+
+        }
     }
 }

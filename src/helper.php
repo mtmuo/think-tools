@@ -6,13 +6,14 @@ use think\response\Json;
 if (!function_exists('response_success')) {
     /**
      * 返回请求请成功
-     * @param array $data
+     * @param array|string $data
+     * @param int $code
      * @return \think\response\Json
      */
-    function response_success($data = []): Json
+    function response_success($data = [], int $code = 0): Json
     {
         return json([
-            'code' => 0,
+            'code' => $code,
             'msg' => 'success',
             'timestamp' => time(),
             'result' => $data,
@@ -21,7 +22,7 @@ if (!function_exists('response_success')) {
 }
 
 if (!function_exists('response_error')) {
-    function response_error($msg = 'error', $code = 500): Json
+    function response_error($msg = 'error', int $code = 500): Json
     {
         return json([
             'code' => $code,
@@ -32,10 +33,10 @@ if (!function_exists('response_error')) {
 }
 
 if (!function_exists('response_status')) {
-    function response_status($msg = 'success'): Json
+    function response_status($msg = 'success', $code = 0): Json
     {
         return json([
-            'code' => 0,
+            'code' => $code,
             'msg' => $msg,
             'timestamp' => time(),
         ]);
@@ -43,7 +44,13 @@ if (!function_exists('response_status')) {
 }
 
 if (!function_exists('auth_builder')) {
-    function auth_builder(array $claims): string
+    /**
+     * @param string|array $claims
+     * @return string
+     * @date: 2021-06-02 11:09
+     * @author: zt
+     */
+    function auth_builder($claims): string
     {
         return JWTAuth::builder($claims);
     }
@@ -65,12 +72,23 @@ if (!function_exists('auth_invalidate')) {
 
 if (!function_exists('auth_claim')) {
     /**
-     * @param string|null $key
-     * @param null $default
+     * @param  $key
+     * @param  $default
      * @return mixed
      */
-    function auth_claim(string $key = null, $default = null)
+    function auth_claim($key, $default = null)
     {
         return JWTAuth::getClaim($key, $default);
+    }
+}
+if (!function_exists('auth_payload')) {
+    /**
+     * @param mixed $key
+     * @param mixed $default
+     * @return \mtmuo\think\jwt\Payload|string
+     */
+    function auth_payload($key = null, $default = null)
+    {
+        return JWTAuth::getPayload($key, $default);
     }
 }

@@ -53,14 +53,30 @@ class JWTAuth
         ]
     ];
 
+    /**
+     * 是否授权
+     * @var bool
+     */
+    protected $isAuth = false;
+
     public function __construct()
     {
         $this->config = array_merge($this->config, Config::get('tools.jwt'), []);
         $this->payload = new Payload();
     }
 
-    public function builder(array $claims): string
+    /**
+     * @param mixed $claims
+     * @param array $config
+     * @return string
+     * @date: 2021-06-02 11:07
+     * @author: zt
+     */
+    public function builder($claims = null, array $config = []): string
     {
+        if (empty($config) && is_array($config)) {
+            $this->config = array_merge($this->config, $config);
+        }
         $this->payload
             ->iss($this->config['iss'])
             ->sub($this->config['sub'])
@@ -70,7 +86,7 @@ class JWTAuth
         return $this->create();
     }
 
-    private function signature(string $baseString, $algo)
+    private function signature($baseString, $algo)
     {
         return $this->base64UrlEncode(hash_hmac($algo, $baseString, $this->config['secret'], true));
     }
@@ -80,7 +96,7 @@ class JWTAuth
         return str_replace('=', '', strtr(base64_encode($input), '+/', '-_'));
     }
 
-    private function base64UrlDecode(string $input)
+    private function base64UrlDecode($input)
     {
         $remainder = strlen($input) % 4;
         if ($remainder) {
@@ -127,7 +143,7 @@ class JWTAuth
             ->iat($payload['iat'])
             ->jti($payload['jti'])
             ->setClaims($payload['claims']);
-
+        $this->isAuth = true;
         return $this->payload;
     }
 
@@ -167,7 +183,14 @@ class JWTAuth
         return $this->payload->get(null);
     }
 
-    public function getPayload(string $key = "", $default = null)
+    /**
+     * @param mixed $key
+     * @param mixed $default
+     * @return mixed|\mtmuo\think\jwt\Payload|null
+     * @date: 2021-06-02 11:17
+     * @author: zt
+     */
+    public function getPayload($key = null, $default = null)
     {
         return $this->payload->get($key, $default);
     }
@@ -183,5 +206,16 @@ class JWTAuth
     public function validate(string $jit = null): bool
     {
         return Cache::has($jit ?? $this->payload->jti);
+    }
+
+    /**
+     * Check whether the current request is authorized to verify
+     * @return bool
+     * @date: 2021-06-02 11:20
+     * @author: zt
+     */
+    public function isAuth(): bool
+    {
+        return $this->isAuth;
     }
 }
