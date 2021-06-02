@@ -21,7 +21,7 @@ use think\facade\Request;
  * @property string $sub
  * @package mtmuo\think\permissions
  */
-class IsAuthenticated
+trait IsAuthenticated
 {
     /**
      * 必选全部授权中间件
