@@ -14,7 +14,6 @@ namespace mtmuo\think\middleware;
 use Closure;
 use Exception;
 use mtmuo\think\facade\JWTAuth;
-use mtmuo\think\jwt\Payload;
 use think\Request;
 
 class CheckAuthMiddleware
@@ -33,7 +32,13 @@ class CheckAuthMiddleware
         return $next($request)->header($this->header);
     }
 
-    public function check(Request $request): Payload
+    /**
+     * @param \think\Request $request
+     * @return \mtmuo\think\jwt\Payload|null
+     * @date: 2021-06-02 14:41
+     * @author: zt
+     */
+    public function check(Request $request)
     {
         $Authorization = "";
         if ($request->cookie("Authorization")) {
@@ -44,7 +49,7 @@ class CheckAuthMiddleware
         try {
             return JWTAuth::auth($Authorization);
         } catch (Exception $exception) {
-
+            return null;
         }
     }
 }

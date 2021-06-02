@@ -41,7 +41,7 @@ class ForceCheckAuthMiddleware
         return $next($request)->header($this->header);
     }
 
-    public function check(Request $request): Payload
+    public function check(Request $request)
     {
         $Authorization = "";
         if ($request->cookie("Authorization")) {
