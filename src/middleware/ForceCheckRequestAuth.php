@@ -53,9 +53,9 @@ class ForceCheckRequestAuth
     public function check(Request $request): Payload
     {
         $Authorization = "";
-        if ($request->cookie("Authorization")) {
+        if ($request->header("Authorization")) {
             $Authorization = $request->cookie("Authorization");
-        } elseif ($request->header("Authorization")) {
+        } elseif ($request->cookie("Authorization")) {
             $Authorization = $request->header("Authorization");
         }
         return JWTAuth::auth($Authorization);

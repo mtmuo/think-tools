@@ -6,7 +6,7 @@ use think\response\Json;
 if (!function_exists('response_success')) {
     /**
      * 返回请求请成功
-     * @param array $data
+     * @param array|string $data
      * @return \think\response\Json
      */
     function response_success($data = []): Json
@@ -43,9 +43,9 @@ if (!function_exists('response_status')) {
 }
 
 if (!function_exists('auth_builder')) {
-    function auth_builder(array $claims): string
+    function auth_builder(array $claims, array $config = []): string
     {
-        return JWTAuth::builder($claims);
+        return JWTAuth::builder($claims,$config);
     }
 }
 
@@ -65,12 +65,23 @@ if (!function_exists('auth_invalidate')) {
 
 if (!function_exists('auth_claim')) {
     /**
-     * @param string|null $key
+     * @param null $key
      * @param null $default
      * @return mixed
      */
-    function auth_claim(string $key = null, $default = null)
+    function auth_claim($key = null, $default = null)
     {
         return JWTAuth::getClaim($key, $default);
+    }
+}
+if (!function_exists('auth_payload')) {
+    /**
+     * @param null $key
+     * @param null $default
+     * @return \mtmuo\think\jwt\Payload|string
+     */
+    function auth_payload($key = null, $default = null)
+    {
+        return JWTAuth::getPayload($key, $default);
     }
 }

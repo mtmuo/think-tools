@@ -53,18 +53,26 @@ class JWTAuth
         ]
     ];
 
+    /**
+     * Payload 来源
+     * @var
+     */
+    protected $isAuth = false;
+
     public function __construct()
     {
         $this->config = array_merge($this->config, Config::get('tools.jwt'), []);
         $this->payload = new Payload();
     }
 
-    public function builder(array $claims): string
+    public function builder(array $claims, array $config = []): string
     {
+        $config = array_merge($this->config, $config);
+
         $this->payload
-            ->iss($this->config['iss'])
-            ->sub($this->config['sub'])
-            ->aud($this->config['aud'])
+            ->iss($config['iss'])
+            ->sub($config['sub'])
+            ->aud($config['aud'])
             ->exp(time() + $this->config['ttl'])
             ->setClaims($claims);
         return $this->create();
@@ -90,6 +98,14 @@ class JWTAuth
         return base64_decode(strtr($input, '-_', '+/'));
     }
 
+    /**
+     * 验证授权
+     * @param string $input
+     * @return \mtmuo\think\jwt\Payload
+     * @throws \mtmuo\think\exception\AuthException
+     * @date: 2021-06-02 09:23
+     * @author: zt
+     */
     public function auth(string $input): Payload
     {
         if (empty($input)) {
@@ -120,7 +136,7 @@ class JWTAuth
             ->iat($payload['iat'])
             ->jti($payload['jti'])
             ->setClaims($payload['claims']);
-
+        $this->isAuth = true;
         return $this->payload;
     }
 
@@ -150,7 +166,7 @@ class JWTAuth
         return $this->create();
     }
 
-    public function getClaim(string $key = "", $default = null)
+    public function getClaim($key = "", $default = null)
     {
         return $this->payload->getClaim($key, $default);
     }
@@ -160,7 +176,7 @@ class JWTAuth
         return $this->payload->get(null);
     }
 
-    public function getPayload(string $key = "", $default = null)
+    public function getPayload($key = "", $default = null)
     {
         return $this->payload->get($key, $default);
     }
@@ -173,8 +189,15 @@ class JWTAuth
         return Cache::delete($jit ?? $this->payload->jti);
     }
 
+
     public function validate(string $jit = null): bool
     {
         return Cache::has($jit ?? $this->payload->jti);
+    }
+
+    // 检测是否授权
+    public function isAuth(): bool
+    {
+        return $this->isAuth;
     }
 }

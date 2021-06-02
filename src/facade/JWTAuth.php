@@ -16,13 +16,14 @@ use think\Facade;
 
 /**
  * Class JWTAuth
- * @method static string builder($data)
+ * @method static string builder(array $data, array $config)
  * @method static Payload auth($data)
  * @method static string refresh()
- * @method static mixed getClaim(string $key = null,$default = null)
- * @method static string|Payload getPayload(string $key = null)
+ * @method static mixed getClaim(string $key = null, $default = null)
+ * @method static string|Payload getPayload($key = null,$default = null)
  * @method static bool invalidate(string $jit = null, int $delay = 0)
  * @method static bool validate(string $jit = null)
+ * @method static bool isAuth()
  * @mixin \mtmuo\think\JWTAuth
  * @package mtmuo\think\facade
  */

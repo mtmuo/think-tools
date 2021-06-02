@@ -13,7 +13,7 @@ namespace mtmuo\think\paginator;
 
 use think\Paginator;
 
-class Ant extends Paginator
+class AntPaginator extends Paginator
 {
     public function render()
     {
