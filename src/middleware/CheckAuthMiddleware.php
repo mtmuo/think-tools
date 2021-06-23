@@ -26,6 +26,12 @@ class CheckAuthMiddleware
         'Access-Control-Allow-Headers' => 'Authorization, Content-Type, If-Match, If-Modified-Since, If-None-Match, If-Unmodified-Since, X-CSRF-TOKEN, X-Requested-With',
     ];
 
+    public function __construct(Request $request)
+    {
+        $this->header['Access-Control-Allow-Origin'] = $request->header('origin', '*');
+
+    }
+
     public function handle(Request $request, Closure $next)
     {
         $this->check($request);

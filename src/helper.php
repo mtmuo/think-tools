@@ -58,14 +58,14 @@ if (!function_exists('auth_builder')) {
 }
 
 if (!function_exists('auth_validate')) {
-    function auth_validate(string $jit): bool
+    function auth_validate($jit): bool
     {
         return JWTAuth::validate($jit);
     }
 }
 
 if (!function_exists('auth_invalidate')) {
-    function auth_invalidate(string $jit): bool
+    function auth_invalidate($jit): bool
     {
         return JWTAuth::invalidate($jit);
     }
