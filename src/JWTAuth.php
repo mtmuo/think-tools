@@ -140,6 +140,7 @@ class JWTAuth
             $claims = call_user_func($this->config['callback'], true, $payload);
             $payload['claims'] = array_merge($payload['claims'], $claims);
         }
+
         $this->payload
             ->exp($payload['iss'])
             ->sub($payload['sub'])
