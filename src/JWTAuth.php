@@ -47,6 +47,7 @@ class JWTAuth
         'strict' => true,
         // cookie方式验证
         'with_cookie' => true,
+        'callback' => null,
         // cookie属性
         'cookie' => [
             'httponly' => true,
@@ -133,6 +134,11 @@ class JWTAuth
         }
         if ($this->config['strict'] && !$this->validate($payload['jti'])) {
             throw new AuthException("the authorization token has expired or blacklist");
+        }
+        /// 验证成功
+        if ($this->config['callback']) {
+            $claims = call_user_func($this->config['callback'], true, $payload);
+            $payload['claims'] = array_merge($payload['claims'], $claims);
         }
         $this->payload
             ->exp($payload['iss'])

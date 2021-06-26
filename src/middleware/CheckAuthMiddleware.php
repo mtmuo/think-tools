@@ -14,6 +14,7 @@ namespace mtmuo\think\middleware;
 use Closure;
 use Exception;
 use mtmuo\think\facade\JWTAuth;
+use mtmuo\think\jwt\Payload;
 use think\Request;
 
 class CheckAuthMiddleware
@@ -44,7 +45,7 @@ class CheckAuthMiddleware
      * @date: 2021-06-02 14:41
      * @author: zt
      */
-    public function check(Request $request)
+    public function check(Request $request): ?Payload
     {
         $Authorization = "";
         if ($request->cookie("Authorization")) {
