@@ -27,7 +27,7 @@
         "mtmuo\\think\\ToolsService"
       ],
       "config": {
-        "tools": "config/config.php"
+        "jwt": "config/jwt.php"
       }
     }
   }
