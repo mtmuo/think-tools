@@ -16,6 +16,7 @@ use mtmuo\think\jwt\Payload;
 use think\facade\Cache;
 use think\facade\Config;
 use think\facade\Cookie;
+use Closure;
 
 class JWTAuth
 {
@@ -62,7 +63,7 @@ class JWTAuth
 
     public function __construct()
     {
-        $this->config = array_merge($this->config, Config::get('tools.jwt'), []);
+        $this->config = array_merge($this->config, Config::get('jwt', []));
         $this->payload = new Payload();
     }
 
@@ -109,8 +110,8 @@ class JWTAuth
 
     /**
      * @param $input
-     * @return \mtmuo\think\jwt\Payload
-     * @throws \mtmuo\think\exception\AuthException
+     * @return Payload
+     * @throws AuthException
      * @date: 2021-06-02 11:05
      * @author: zt
      */
@@ -135,11 +136,6 @@ class JWTAuth
         if ($this->config['strict'] && !$this->validate($payload['jti'])) {
             throw new AuthException("the authorization token has expired or blacklist");
         }
-        /// 验证成功
-        if ($this->config['callback']) {
-            $claims = call_user_func($this->config['callback'], true, $payload);
-            $payload['claims'] = array_merge($payload['claims'], $claims);
-        }
 
         $this->payload
             ->exp($payload['iss'])
@@ -150,6 +146,12 @@ class JWTAuth
             ->iat($payload['iat'])
             ->jti($payload['jti'])
             ->setClaims($payload['claims']);
+
+        $callback = $this->config['callback'];
+        /// 验证成功
+        if ($callback instanceof Closure || (is_string($callback) && function_exists($callback))) {
+            call_user_func($this->config['callback'], $this->payload);
+        }
         $this->isAuth = true;
         return $this->payload;
     }
@@ -180,7 +182,7 @@ class JWTAuth
         return $this->create();
     }
 
-    public function getClaim(string $key = "", $default = null)
+    public function getClaim($key = null, $default = null)
     {
         return $this->payload->getClaim($key, $default);
     }
@@ -193,7 +195,7 @@ class JWTAuth
     /**
      * @param mixed $key
      * @param mixed $default
-     * @return mixed|\mtmuo\think\jwt\Payload|null
+     * @return mixed|Payload|null
      * @date: 2021-06-02 11:17
      * @author: zt
      */

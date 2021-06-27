@@ -7,6 +7,8 @@
 // | Author: mtmuo <2172614@qq.com>
 // +----------------------------------------------------------------------
 
+use mtmuo\think\jwt\Payload;
+
 return [
     // 秘钥信息
     'secret' => "think-tools",
@@ -26,10 +28,11 @@ return [
     'with_cookie' => true,
     // 验证cookie设置
     'cookie' => [
-        //'secure' => true,
-        //'httponly' => true,
+        'httponly' => true,
     ],
-    'callback' => function () {
+    'callback' => function (Payload $payload) {
+        // 验证成功可以操作复制
+        //$payload->claims['sid'] = 12;
 
     }
 ];

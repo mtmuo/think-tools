@@ -25,22 +25,29 @@ namespace mtmuo\think\jwt;
 class Payload
 {
     public $claims = [];
+
     // 签发者
     public $iss;
+
     // 面向用户
     public $sub;
+
     // 接收方
     public $aud;
+
     // 过期时间
     public $exp;
+
     // 生效时间
     public $nbf;
+
     // 签发时间
     public $iat;
+
     // 身份标识
     public $jti;
 
-    public function getClaim($key = "", $default = null)
+    public function getClaim($key = null, $default = null)
     {
         if (empty($key)) {
             return $this->claims;

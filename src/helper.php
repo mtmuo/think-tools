@@ -1,6 +1,7 @@
 <?php
 
 use mtmuo\think\facade\JWTAuth;
+use mtmuo\think\jwt\Payload;
 use think\response\Json;
 
 if (!function_exists('response_success')) {
@@ -8,7 +9,7 @@ if (!function_exists('response_success')) {
      * 返回请求请成功
      * @param array|string $data
      * @param int $code
-     * @return \think\response\Json
+     * @return Json
      */
     function response_success($data = [], int $code = 0): Json
     {
@@ -53,7 +54,7 @@ if (!function_exists('auth_builder')) {
      */
     function auth_builder($claims, array $config = []): string
     {
-        return JWTAuth::builder($claims,$config);
+        return JWTAuth::builder($claims, $config);
     }
 }
 
@@ -77,16 +78,17 @@ if (!function_exists('auth_claim')) {
      * @param  $default
      * @return mixed
      */
-    function auth_claim($key, $default = null)
+    function auth_claim($key = null, $default = null)
     {
         return JWTAuth::getClaim($key, $default);
     }
 }
+
 if (!function_exists('auth_payload')) {
     /**
      * @param mixed $key
      * @param mixed $default
-     * @return \mtmuo\think\jwt\Payload|string
+     * @return Payload|string
      */
     function auth_payload($key = null, $default = null)
     {
