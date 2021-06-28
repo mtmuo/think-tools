@@ -22,7 +22,6 @@ class ForceCheckAuthMiddleware
 {
     protected $header = [
         'Access-Control-Allow-Credentials' => 'true',
-        'Access-Control-Allow-Origin' => '*',
         'Access-Control-Max-Age' => 86400,
         'Access-Control-Allow-Methods' => 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
         'Access-Control-Allow-Headers' => 'Authorization, Content-Type, If-Match, If-Modified-Since, If-None-Match, If-Unmodified-Since, X-CSRF-TOKEN, X-Requested-With',
@@ -38,10 +37,12 @@ class ForceCheckAuthMiddleware
     public function handle(Request $request, Closure $next)
     {
         $this->check($request);
+        // 设置代理域名
+        $this->header['Access-Control-Allow-Origin'] = $request->header('origin', '*');
         return $next($request)->header($this->header);
     }
 
-    public function check(Request $request)
+    public function check(Request $request): Payload
     {
         $Authorization = "";
         if ($request->cookie("Authorization")) {

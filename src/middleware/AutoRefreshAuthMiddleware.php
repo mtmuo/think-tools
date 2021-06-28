@@ -25,9 +25,10 @@ class AutoRefreshAuthMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
+        $response = $next($request);
         if (JWTAuth::isAuth() && (int)JWTAuth::getPayload('exp') < strtotime("+30 min")) {
             JWTAuth::refresh();
         }
-        return $next($request);
+        return $response;
     }
 }

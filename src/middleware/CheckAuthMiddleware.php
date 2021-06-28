@@ -12,7 +12,7 @@
 namespace mtmuo\think\middleware;
 
 use Closure;
-use Exception;
+use mtmuo\think\exception\AuthException;
 use mtmuo\think\facade\JWTAuth;
 use mtmuo\think\jwt\Payload;
 use think\Request;
@@ -27,15 +27,11 @@ class CheckAuthMiddleware
         'Access-Control-Allow-Headers' => 'Authorization, Content-Type, If-Match, If-Modified-Since, If-None-Match, If-Unmodified-Since, X-CSRF-TOKEN, X-Requested-With',
     ];
 
-    public function __construct(Request $request)
-    {
-        $this->header['Access-Control-Allow-Origin'] = $request->header('origin', '*');
-
-    }
-
     public function handle(Request $request, Closure $next)
     {
         $this->check($request);
+        // 设置代理域名
+        $this->header['Access-Control-Allow-Origin'] = $request->header('origin', '*');
         return $next($request)->header($this->header);
     }
 
@@ -55,7 +51,7 @@ class CheckAuthMiddleware
         }
         try {
             return JWTAuth::auth($Authorization);
-        } catch (Exception $exception) {
+        } catch (AuthException $exception) {
             return null;
         }
     }
