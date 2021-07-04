@@ -39,7 +39,7 @@ class CheckAuthMiddleware
 
     public function before($request)
     {
-        $this->check($request);
+        $this->check();
     }
 
     public function after()
@@ -55,7 +55,7 @@ class CheckAuthMiddleware
      * @date: 2021-06-02 14:41
      * @author: zt
      */
-    public function check(Request $request): ?Payload
+    public function check(): ?Payload
     {
         $token = JWTAuth::token();
         try {

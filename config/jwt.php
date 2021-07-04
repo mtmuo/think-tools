@@ -13,11 +13,11 @@ return [
     // 秘钥信息
     'secret' => "think-tools",
     // 签发者
-    'iss' => '',
+    'iss' => 'think',
     // 面向用户
-    'sub' => '',
+    'sub' => 'think',
     // 接收方
-    'aud' => '',
+    'aud' => 'think',
     // 证书有效时间
     'ttl' => 86400,
     // 加密方式
@@ -25,14 +25,16 @@ return [
     // 严格模式验证黑名单机制
     'strict' => true,
     // 返回cookie
-    'with_cookie' => true,
+    'with_cookie' => false,
+
     // 验证cookie设置
     'cookie' => [
         'httponly' => true,
     ],
+    // 验证成功回调
     'callback' => function (Payload $payload) {
-        // 验证成功可以操作复制
-        //$payload->claims['sid'] = 12;
 
-    }
+    },
+    // 白名单
+    'exclude' => [],
 ];
