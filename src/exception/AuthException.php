@@ -12,7 +12,7 @@
 namespace mtmuo\think\exception;
 
 
-use think\Exception;
+use Exception;
 use Throwable;
 
 class AuthException extends Exception

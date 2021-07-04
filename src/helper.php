@@ -66,9 +66,9 @@ if (!function_exists('auth_validate')) {
 }
 
 if (!function_exists('auth_invalidate')) {
-    function auth_invalidate($jit): bool
+    function auth_invalidate($jit = null, $delay = 0): bool
     {
-        return JWTAuth::invalidate($jit);
+        return JWTAuth::invalidate($jit, $delay);
     }
 }
 

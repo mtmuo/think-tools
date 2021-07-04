@@ -18,6 +18,11 @@ use mtmuo\think\jwt\Payload;
 use think\Request;
 use think\Response;
 
+/**
+ * @deprecated
+ * Class ForceCheckAuthMiddleware
+ * @package mtmuo\think\middleware
+ */
 class ForceCheckAuthMiddleware
 {
     protected $header = [

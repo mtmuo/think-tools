@@ -17,6 +17,7 @@ use think\facade\Cache;
 use think\facade\Config;
 use think\facade\Cookie;
 use Closure;
+use think\facade\Request;
 
 class JWTAuth
 {
@@ -55,6 +56,7 @@ class JWTAuth
         ]
     ];
 
+
     /**
      * 是否授权
      * @var bool
@@ -65,6 +67,12 @@ class JWTAuth
     {
         $this->config = array_merge($this->config, Config::get('jwt', []));
         $this->payload = new Payload();
+    }
+
+    public function token()
+    {
+        $token = $this->config['with_cookie'] ? Request::cookie('Authorization', "") : Request::header('Authorization', "");
+        return trim(str_replace("Bearer", "", $token));
     }
 
     /**
@@ -125,13 +133,20 @@ class JWTAuth
             throw new AuthException("authorization token format error");
         }
         $header = json_decode($this->base64UrlDecode($arr[0]), true);
+        if (empty($header)) {
+            throw new AuthException("authorization header verification failed");
+        }
         $signature = $this->signature($arr[0] . "." . $arr[1], $header['alg']);
         if ($signature != $arr[2]) {
-            throw new AuthException("authorization token verification failed");
+            throw new AuthException("authorization signature verification failed");
         }
         $payload = json_decode($this->base64UrlDecode($arr[1]), true);
-        if ($payload['exp'] < time()) {
+        if (!is_array($payload)) {
+            throw new AuthException("authorization token format error");
+        } elseif ($payload['exp'] < time()) {
             throw new AuthException("the authorization token has expired");
+        } elseif ($payload['iss'] != $this->config['iss'] || $payload['sub'] != $this->config['sub'] || $payload['aud'] != $this->config['aud']) {
+            throw new AuthException("the authorization not not support");
         }
         if ($this->config['strict'] && !$this->validate($payload['jti'])) {
             throw new AuthException("the authorization token has expired or blacklist");
@@ -178,7 +193,7 @@ class JWTAuth
 
     public function refresh(): string
     {
-        $this->payload->exp(time() + $this->config['ttl'])->toJson();
+        $this->payload->exp(time() + $this->config['ttl']);
         return $this->create();
     }
 
@@ -206,9 +221,16 @@ class JWTAuth
 
     public function invalidate($jit = null, int $delay = 0): bool
     {
+        $jit = $jit ?? $this->payload->jti;
+        if (empty($jit)) {
+            return true;
+        }
         if ($delay) {
+            header('Authorization-Max-Age:' . $delay);
             return Cache::set($jit ?? $this->payload->jti, time(), $delay);
         }
+        header('Authorization: ');
+        Cookie::delete('Authorization');
         return Cache::delete($jit ?? $this->payload->jti);
     }
 

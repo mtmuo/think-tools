@@ -29,28 +29,37 @@ class CheckAuthMiddleware
 
     public function handle(Request $request, Closure $next)
     {
-        $this->check($request);
-        // 设置代理域名
         $this->header['Access-Control-Allow-Origin'] = $request->header('origin', '*');
-        return $next($request)->header($this->header);
+        $this->before($request);
+        $response = $next($request);
+        $this->after();
+        // 设置代理域名
+        return $response->header($this->header);
+    }
+
+    public function before($request)
+    {
+        $this->check($request);
+    }
+
+    public function after()
+    {
+        if (JWTAuth::isAuth() && (int)JWTAuth::getPayload('exp') < strtotime("+5 min")) {
+            JWTAuth::refresh();
+        }
     }
 
     /**
-     * @param \think\Request $request
-     * @return \mtmuo\think\jwt\Payload|null
+     * @param Request $request
+     * @return Payload|null
      * @date: 2021-06-02 14:41
      * @author: zt
      */
     public function check(Request $request): ?Payload
     {
-        $Authorization = "";
-        if ($request->cookie("Authorization")) {
-            $Authorization = $request->cookie("Authorization");
-        } elseif ($request->header("Authorization")) {
-            $Authorization = $request->header("Authorization");
-        }
+        $token = JWTAuth::token();
         try {
-            return JWTAuth::auth($Authorization);
+            return JWTAuth::auth($token);
         } catch (AuthException $exception) {
             return null;
         }

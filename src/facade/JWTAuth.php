@@ -17,6 +17,7 @@ use think\Facade;
 /**
  * Class JWTAuth
  * @method static string builder($data, array $config = [])
+ * @method static string token()
  * @method static Payload auth($data)
  * @method static string refresh()
  * @method static mixed getClaim($key = null, $default = null)

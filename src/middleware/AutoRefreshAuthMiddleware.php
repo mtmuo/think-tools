@@ -17,7 +17,7 @@ use mtmuo\think\facade\JWTAuth;
 use think\Request;
 
 /**
- * 自动刷新授权时间
+ * @deprecated
  * Class AutoRefreshAuthMiddleware
  * @package mtmuo\think\middleware
  */
